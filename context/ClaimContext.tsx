@@ -156,6 +156,14 @@ export function ClaimProvider({ children }: { children: React.ReactNode }) {
       reasonText: "I changed jobs",
       classification: out,
       claimPath: out.claim_path,
+      // Seed documents as uploaded so Review/Submit work
+      documents: c.documents.map((d) =>
+        d.required ? { ...d, uploaded: true, fileName: d.id + "-mock.jpg" } : d
+      ),
+      // Resolve name mismatch so Continue isn't blocked
+      resolvedIssues: c.resolvedIssues.includes("name_mismatch")
+        ? c.resolvedIssues
+        : [...c.resolvedIssues, "name_mismatch"],
       submitted: c.submitted,
       referenceNumber: c.referenceNumber ?? null,
       status: c.status,

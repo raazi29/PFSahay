@@ -408,15 +408,14 @@ export default function LandingPage() {
                   : "Log in with your UAN and let PFSahay guide you — quick, secure, and stress-free."}
               </p>
               <div className="mt-7 flex justify-center">
-                <Button
-                  size="lg"
+                <button
                   onClick={login}
-                  className="gap-2 bg-white text-primary hover:bg-white/90 active:bg-white/90"
+                  className="inline-flex items-center justify-center gap-2 rounded-xl bg-white px-6 py-3.5 text-base font-medium text-primary shadow-lg hover:bg-canvas active:bg-canvas transition-colors"
                 >
                   <Lock size={16} />
                   {hi ? "UAN से लॉगिन" : "Login with UAN"}
                   <ArrowRight size={16} />
-                </Button>
+                </button>
               </div>
               <p className="mt-4 text-xs text-white/55">
                 {hi
