@@ -110,7 +110,7 @@ export function PageContainer({
   className?: string;
 }) {
   return (
-    <main className={cn("flex-1 px-4 sm:px-6 lg:px-8 pb-12 pt-5 max-w-4xl mx-auto w-full", className)}>
+    <main className={cn("flex-1 px-4 sm:px-6 lg:px-10 pb-12 pt-5 w-full", className)}>
       {children}
     </main>
   );
