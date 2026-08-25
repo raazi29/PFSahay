@@ -19,9 +19,9 @@ export function AppShell({ children, topBar = true }: { children: React.ReactNod
 
   return (
     <MobileMenuContext.Provider value={{ openMenu: () => setMenuOpen(true) }}>
-    <div className="flex min-h-screen bg-canvas">
-      {/* Desktop sidebar */}
-      <div className="hidden lg:flex flex-col w-[260px] shrink-0 border-r border-line bg-surface h-screen sticky top-0">
+    <div className="flex h-screen overflow-hidden bg-canvas">
+      {/* Desktop sidebar — fixed, never scrolls */}
+      <div className="hidden lg:flex flex-col w-[260px] shrink-0 border-r border-line bg-surface overflow-y-auto">
         <SidebarContent />
       </div>
 
@@ -35,8 +35,8 @@ export function AppShell({ children, topBar = true }: { children: React.ReactNod
         </div>
       )}
 
-      {/* Main content */}
-      <div className="flex-1 flex flex-col min-w-0">
+      {/* Main content — scrolls independently */}
+      <div className="flex-1 flex flex-col min-w-0 overflow-y-auto">
         {/* Mobile top bar */}
         {topBar && (
           <header className="lg:hidden sticky top-0 z-30 flex items-center gap-3 border-b border-line bg-canvas/90 px-4 py-3 backdrop-blur">
