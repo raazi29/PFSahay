@@ -276,16 +276,17 @@ export default function DashboardPage() {
 }
 
 function KycRow({ label, verified }: { label: string; verified: boolean }) {
+  const { lang } = useLanguage();
   return (
     <div className="flex items-center justify-between">
       <span className="text-[15px] text-ink">{label}</span>
       {verified ? (
         <Badge tone="success">
           <CheckCircle2 size={12} className="mr-1" />
-          Verified
+          {lang === "hi" ? "सत्यापित" : "Verified"}
         </Badge>
       ) : (
-        <Badge tone="warning">Not Linked</Badge>
+        <Badge tone="warning">{lang === "hi" ? "लिंक नहीं" : "Not Linked"}</Badge>
       )}
     </div>
   );
