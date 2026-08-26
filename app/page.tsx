@@ -8,20 +8,12 @@ import { DemoControls } from "@/components/DemoControls";
 import { useLanguage } from "@/context/LanguageContext";
 import {
   Lock,
-  MessageSquare,
-  FileText,
-  BarChart3,
   ArrowRight,
   Check,
   Menu,
   X,
-  Search,
-  Send,
-  CheckCircle2,
   Copy,
   Play,
-  PenTool,
-  Route,
 } from "lucide-react";
 
 export default function LandingPage() {
@@ -163,102 +155,83 @@ export default function LandingPage() {
         </div>
       </section>
 
-      {/* ─── Problem → Solution → Outcome ─── */}
+      {/* ─── The signature moment: one editorial statement, one real proof point ─── */}
       <section className="border-y border-line bg-canvas">
-        <div className="mx-auto max-w-[1320px] px-6 py-16 lg:px-10 lg:py-20">
-          <div className="grid gap-8 lg:grid-cols-3">
-            {/* THE PROBLEM */}
-            <div className="relative">
-              <p className="mb-3 text-xs font-bold uppercase tracking-widest text-primary">
-                {hi ? "समस्या" : "THE PROBLEM"}
-              </p>
-              <h3 className="text-2xl font-bold leading-snug text-ink lg:text-[1.75rem]">
-                {hi ? "प्रक्रिया कठिन है। नियम भ्रमित करने वाले हैं।" : "The process is difficult. The rules are confusing."}
-              </h3>
-              <div className="mt-3 h-1 w-8 rounded-full bg-primary" />
-              <p className="mt-4 text-sm leading-relaxed text-muted">
-                {hi
-                  ? "फॉर्म जटिल हैं। आवश्यकताएं बदलती हैं। एक छोटी गलती बड़ी देरी का कारण बन सकती है।"
-                  : "Forms are complex. Requirements change. A small mistake can cause big delays."}
-              </p>
-            </div>
+        <div className="mx-auto max-w-[1320px] px-6 py-20 lg:px-10 lg:py-28">
+          <div className="mx-auto max-w-2xl text-center">
+            <h2 className="text-[1.75rem] font-bold leading-[1.25] tracking-tight text-ink lg:text-[2.25rem]">
+              {hi ? (
+                <>ज़्यादातर दावे <em className="font-serif italic text-primary not-italic">नियमों</em> की वजह से नहीं, <em className="font-serif italic text-primary not-italic">छोटी गलतियों</em> की वजह से अटकते हैं जो समय पर कोई नहीं पकड़ता।</>
+              ) : (
+                <>Most claims don't stall on the <em className="font-serif italic text-primary not-italic">rules</em>. They stall on <em className="font-serif italic text-primary not-italic">small mismatches</em> nobody catches in time.</>
+              )}
+            </h2>
+          </div>
 
-            {/* OUR SOLUTION */}
-            <div className="relative flex flex-col items-center text-center lg:border-x lg:border-line lg:px-8">
-              <p className="mb-3 text-xs font-bold uppercase tracking-widest text-primary">
-                {hi ? "हमारा समाधान" : "OUR SOLUTION"}
-              </p>
-              <h3 className="text-2xl font-bold leading-snug text-ink lg:text-[1.75rem]">
-                {hi ? "हम जाँचते हैं कि क्या गलत हो सकता है।" : "We check what could go wrong."}
-              </h3>
-              {/* Mismatch demo */}
-              <div className="mt-6 flex items-center gap-3">
-                <div className="rounded-xl border border-line bg-white px-4 py-3 text-center">
-                  <p className="text-[10px] uppercase text-muted">AADHAAR</p>
-                  <p className="text-sm font-bold text-ink">Arjun Mehta</p>
-                </div>
-                <span className="text-xl font-bold text-danger">≠</span>
-                <div className="rounded-xl border border-line bg-white px-4 py-3 text-center">
-                  <p className="text-[10px] uppercase text-muted">UAN</p>
-                  <p className="text-sm font-bold text-ink">Arjun M.</p>
-                </div>
+          {/* The mismatch demo — the actual proof, given room to breathe */}
+          <div className="mx-auto mt-14 max-w-xl">
+            <div className="flex items-center justify-center gap-4 sm:gap-6">
+              <div className="flex-1 rounded-2xl border border-line bg-white px-5 py-5 text-center shadow-card">
+                <p className="text-[11px] font-bold uppercase tracking-wide text-muted">Aadhaar</p>
+                <p className="mt-1 text-lg font-bold text-ink">Arjun Mehta</p>
               </div>
-              <p className="mt-4 text-sm text-muted">
-                {hi
-                  ? "छोटा अंतर बड़ी देरी बन सकता है।"
-                  : "A small difference can become a big delay."}
-              </p>
-              <a href="/login" className="mt-2 inline-flex items-center gap-1 text-sm font-medium text-primary hover:underline">
-                {hi ? "फ़ाइल करने से पहले ठीक करें" : "Fix it before you file"} <ArrowRight size={13} />
+              <span className="shrink-0 text-2xl font-bold text-danger">≠</span>
+              <div className="flex-1 rounded-2xl border border-line bg-white px-5 py-5 text-center shadow-card">
+                <p className="text-[11px] font-bold uppercase tracking-wide text-muted">UAN</p>
+                <p className="mt-1 text-lg font-bold text-ink">Arjun M.</p>
+              </div>
+            </div>
+            <p className="mx-auto mt-6 max-w-sm text-center text-[15px] leading-relaxed text-muted">
+              {hi
+                ? "यह एक छोटा सा अंतर है — और दावा अस्वीकृति के सबसे आम कारणों में से एक। हम इसे जमा करने से पहले पकड़ लेते हैं, बाद में समझाने के बजाय।"
+                : "It's a small difference — and one of the most common reasons claims get rejected. We catch it before you file, instead of explaining it after."}
+            </p>
+            <div className="mt-6 flex items-center justify-center">
+              <a href="/login" className="inline-flex items-center gap-1.5 text-sm font-semibold text-primary hover:underline">
+                {hi ? "फ़ाइल करने से पहले ठीक करें" : "See how we catch it"} <ArrowRight size={14} />
               </a>
-            </div>
-
-            {/* THE OUTCOME */}
-            <div className="relative lg:pl-4">
-              <p className="mb-3 text-xs font-bold uppercase tracking-widest text-primary">
-                {hi ? "परिणाम" : "THE OUTCOME"}
-              </p>
-              <h3 className="text-2xl font-bold leading-snug text-ink lg:text-[1.75rem]">
-                {hi
-                  ? "एक सही, पूर्ण और तेज़ दावा।"
-                  : "A claim that's correct, complete and ready for faster processing."}
-              </h3>
-              <div className="mt-6 flex items-center justify-center lg:justify-start">
-                <div className="flex h-16 w-16 items-center justify-center rounded-full bg-success/10">
-                  <CheckCircle2 size={32} className="text-success" />
-                </div>
-              </div>
             </div>
           </div>
         </div>
       </section>
 
-      {/* ─── How It Works ─── */}
+      {/* ─── How It Works — a connected rail, not a repeated card grid ─── */}
       <section id="how" className="bg-white">
-        <div className="mx-auto max-w-[1320px] px-6 py-16 lg:px-10 lg:py-20">
-          <p className="mb-2 text-xs font-bold uppercase tracking-widest text-primary">
-            {hi ? "कैसे काम करता है" : "HOW IT WORKS"}
-          </p>
-          <h2 className="text-3xl font-bold tracking-tight text-ink">
-            {hi ? "बातचीत से दावा तक।" : "From conversation to claim."}
+        <div className="mx-auto max-w-[1320px] px-6 py-20 lg:px-10 lg:py-28">
+          <h2 className="max-w-lg text-3xl font-bold tracking-tight text-ink lg:text-4xl">
+            {hi ? "बातचीत से दावा तक, चार चरणों में।" : "From conversation to claim, in four stages."}
           </h2>
 
-          <div className="mt-12 grid grid-cols-2 gap-6 sm:grid-cols-3 lg:grid-cols-7">
+          <div className="mt-16 grid gap-x-6 gap-y-12 sm:grid-cols-2 lg:grid-cols-4">
             {[
-              { icon: MessageSquare, title: hi ? "आप बताएं" : "You tell us", desc: hi ? "अपने शब्दों में" : "In your own words" },
-              { icon: Route, title: hi ? "हम समझें" : "We understand", desc: hi ? "सही दावा प्रकार चुनते हैं" : "We work out the right claim type" },
-              { icon: Search, title: hi ? "हम जाँचें" : "We verify", desc: hi ? "विवरण जाँच, समस्याएँ पकड़ें" : "Check details, catch issues" },
-              { icon: PenTool, title: hi ? "हम ठीक करें" : "We fix", desc: hi ? "मार्गदर्शन के साथ सुधार" : "Correct mismatches" },
-              { icon: FileText, title: hi ? "हम तैयार करें" : "We prepare", desc: hi ? "दावा तैयार" : "Generate claim" },
-              { icon: Send, title: hi ? "आप सबमिट करें" : "You submit", desc: hi ? "आपकी ओर से EPFO को" : "Send to EPFO" },
-              { icon: BarChart3, title: hi ? "आप ट्रैक करें" : "You track", desc: hi ? "हर चरण की जानकारी" : "Status at every step" },
-            ].map((step, i) => (
-              <div key={i} className="flex flex-col items-center text-center">
-                <div className="flex h-12 w-12 items-center justify-center rounded-xl bg-primary/8 text-primary mb-3">
-                  <step.icon size={20} />
+              {
+                n: "1",
+                title: hi ? "आप बताएं" : "Tell us",
+                desc: hi ? "अपने शब्दों में बताएं आपको PF क्यों चाहिए। कोई फॉर्म नहीं, कोई शब्दावली नहीं।" : "Say why you need your PF, in your own words. No forms, no jargon to decode first.",
+              },
+              {
+                n: "2",
+                title: hi ? "हम जाँचें" : "We check",
+                desc: hi ? "आपके आधार, UAN और बैंक विवरण की तुलना करते हैं और समस्याओं को पहले ही पकड़ लेते हैं।" : "We compare your Aadhaar, UAN and bank details, and flag mismatches before they cost you time.",
+              },
+              {
+                n: "3",
+                title: hi ? "हम तैयार करें" : "We prepare",
+                desc: hi ? "सही दस्तावेज़ मांगते हैं और आपका दावा सही फॉर्मेट में तैयार करते हैं।" : "We ask for exactly the documents your claim needs and prepare it in the right format.",
+              },
+              {
+                n: "4",
+                title: hi ? "आप ट्रैक करें" : "You track",
+                desc: hi ? "जमा करने के बाद, हर चरण में स्पष्ट भाषा में जानें कि क्या हो रहा है।" : "After you file, plain-language status at every stage — no guessing what EPFO is doing.",
+              },
+            ].map((step, i, arr) => (
+              <div key={i} className="relative pl-0">
+                <div className="flex items-center gap-3">
+                  <span className="font-serif text-3xl italic text-primary/40">{step.n}</span>
+                  <div className="h-px flex-1 bg-line" />
                 </div>
-                <p className="text-sm font-bold text-ink">{step.title}</p>
-                <p className="mt-0.5 text-xs text-muted leading-snug">{step.desc}</p>
+                <p className="mt-4 text-lg font-bold text-ink">{step.title}</p>
+                <p className="mt-1.5 text-sm leading-relaxed text-muted">{step.desc}</p>
               </div>
             ))}
           </div>
@@ -270,11 +243,12 @@ export default function LandingPage() {
         <div className="mx-auto max-w-[1320px] px-6 py-16 lg:px-10 lg:py-20">
           <div className="grid items-center gap-12 lg:grid-cols-2">
             <div>
-              <p className="mb-2 text-xs font-bold uppercase tracking-widest text-primary">
-                {hi ? "वास्तविक समय ट्रैकिंग" : "REAL-TIME TRACKING"}
-              </p>
-              <h2 className="text-3xl font-bold tracking-tight text-ink">
-                {hi ? "हर चरण ट्रैक करें। हमेशा जानें आगे क्या है।" : "Track every step. Know what's next."}
+              <h2 className="text-3xl font-bold tracking-tight text-ink lg:text-4xl">
+                {hi ? (
+                  <>हर चरण <em className="font-serif italic text-primary not-italic">ट्रैक</em> करें। हमेशा जानें आगे क्या है।</>
+                ) : (
+                  <>Track every step. Always know what's <em className="font-serif italic text-primary not-italic">next</em>.</>
+                )}
               </h2>
               <p className="mt-4 text-[15px] text-muted leading-relaxed max-w-md">
                 {hi
@@ -320,31 +294,30 @@ export default function LandingPage() {
         </div>
       </section>
 
-      {/* ─── Bottom CTA ─── */}
-      <section className="bg-white" id="help">
-        <div className="mx-auto max-w-[1320px] px-6 py-16 lg:px-10">
-          <div className="rounded-2xl bg-primary px-8 py-12 text-center lg:px-16">
-            <h2 className="text-2xl font-bold text-white lg:text-3xl">
-              {hi ? "अपना PF, बिना किसी उलझन के।" : "Your PF, without the guesswork."}
+      {/* ─── Closing — full-bleed statement, not a boxed CTA plate ─── */}
+      <section className="bg-primary" id="help">
+        <div className="mx-auto max-w-[1320px] px-6 py-20 lg:px-10 lg:py-28">
+          <div className="flex flex-col items-start justify-between gap-10 lg:flex-row lg:items-end">
+            <h2 className="max-w-xl text-3xl font-bold leading-tight tracking-tight text-white lg:text-[2.75rem]">
+              {hi ? (
+                <>अपना PF।<br />बिना <em className="font-serif italic not-italic">अंदाज़े</em> के।</>
+              ) : (
+                <>Your PF.<br />Without the <em className="font-serif italic not-italic">guesswork</em>.</>
+              )}
             </h2>
-            <p className="mt-3 text-white/70 max-w-md mx-auto">
-              {hi
-                ? "कोई शब्दावली नहीं। कोई भ्रम नहीं। बस एक सरल बातचीत।"
-                : "No jargon. No confusion. Just a simple conversation and we'll handle the rest."}
-            </p>
-            <div className="mt-8 flex justify-center">
+            <div className="shrink-0">
               <button
                 onClick={startClaim}
-                className="inline-flex items-center gap-2 rounded-xl bg-white px-6 py-3.5 text-base font-semibold text-primary shadow-lg hover:bg-canvas transition-colors"
+                className="inline-flex items-center gap-2 rounded-xl bg-white px-6 py-3.5 text-base font-semibold text-primary transition-colors hover:bg-canvas"
               >
                 <Lock size={16} />
                 {hi ? "UAN से लॉगिन करें" : "Login with UAN"}
                 <ArrowRight size={16} />
               </button>
+              <p className="mt-3 text-xs text-white/60">
+                {hi ? "2 मिनट से कम · डेमो वातावरण" : "Under 2 minutes · Demo environment"}
+              </p>
             </div>
-            <p className="mt-3 text-xs text-white/50">
-              {hi ? "2 मिनट से कम · डेमो वातावरण" : "Under 2 minutes · Demo environment"}
-            </p>
           </div>
         </div>
       </section>
