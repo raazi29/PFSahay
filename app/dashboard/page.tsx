@@ -1,15 +1,14 @@
 "use client";
 
-import { useState, useRef, useEffect } from "react";
 import { useRouter } from "next/navigation";
 import { AppShell, Header, PageContainer } from "@/components/layout/AppShell";
+import { TopBarActions } from "@/components/layout/TopBar";
 import { Button } from "@/components/ui/Button";
 import { Card, Section } from "@/components/ui/Card";
 import { Badge } from "@/components/ui/Badge";
 import { SummaryRow, HelpRow } from "@/components/ui/Helpers";
 import { useLanguage } from "@/context/LanguageContext";
 import { MOCK_USER } from "@/lib/mock-data/user";
-import { cn } from "@/lib/cn";
 import {
   ArrowRight,
   Wallet,
@@ -21,14 +20,8 @@ import {
   BookOpen,
   HelpCircle,
   Shield,
-  Sparkles,
-  MessageSquare,
-  RefreshCw,
   ShieldCheck,
   Clock,
-  Bell,
-  ChevronDown,
-  LogOut,
 } from "lucide-react";
 
 const rupee = new Intl.NumberFormat("en-IN", {
@@ -43,18 +36,12 @@ export default function DashboardPage() {
   const u = MOCK_USER;
 
   const firstName = u.name.split(" ")[0];
-  const initials = u.name
-    .split(" ")
-    .map((w) => w[0])
-    .join("")
-    .slice(0, 2)
-    .toUpperCase();
 
   return (
     <AppShell>
       <PageContainer className="pt-6">
-        {/* Greeting + top actions */}
-        <div className="mb-6 flex items-start justify-between gap-4">
+        {/* Greeting + top actions — sticky so it stays visible while content scrolls */}
+        <div className="sticky top-0 z-20 -mt-6 mb-6 flex items-start justify-between gap-4 bg-canvas/95 pt-6 pb-3 backdrop-blur-md">
           <div className="min-w-0">
             <h1 className="text-[22px] font-bold text-ink tracking-tight">
               {lang === "hi" ? "नमस्ते" : "Good morning"}, {firstName}
@@ -65,16 +52,13 @@ export default function DashboardPage() {
                 : "Let's get your PF claim done, the right way."}
             </p>
           </div>
-          <div className="flex shrink-0 items-center gap-2">
-            <NotificationBell lang={lang} bankLinked={u.bank.linked} />
-            <UserMenu
-              name={u.name}
-              uan={u.uan}
-              initials={initials}
-              lang={lang}
-              onLogout={() => router.push("/")}
-            />
-          </div>
+          <TopBarActions
+            lang={lang}
+            bankLinked={u.bank.linked}
+            name={u.name}
+            uan={u.uan}
+            onLogout={() => router.push("/")}
+          />
         </div>
 
         <div className="grid gap-5 lg:grid-cols-[1fr_300px]">
@@ -125,7 +109,7 @@ export default function DashboardPage() {
               <div className="flex items-start gap-4">
                 <div className="flex-1">
                   <h2 className="text-lg font-bold text-ink">
-                    {lang === "hi" ? "अपना PF क्लेम करने के लिए तैयार?" : "Ready to claim your PF?"}
+                    {lang === "hi" ? "अपना दावा शुरू करें" : "Start your claim"}
                   </h2>
                   <p className="mt-1 text-sm text-muted">
                     {lang === "hi"
@@ -140,7 +124,7 @@ export default function DashboardPage() {
                     <ArrowRight size={15} />
                   </Button>
                   <p className="mt-2 text-xs text-muted flex items-center gap-1.5">
-                    <Sparkles size={12} className="text-brand" />
+                    <Clock size={12} className="text-brand" />
                     {lang === "hi" ? "5 मिनट से कम में" : "Takes less than 5 minutes"}
                   </p>
                 </div>
@@ -278,15 +262,9 @@ export default function DashboardPage() {
               </h3>
               <p className="mt-1 text-sm text-muted">
                 {lang === "hi"
-                  ? "हमारा AI हज़ारों नियम जाँचता है, सामान्य गलतियाँ पकड़ता है और एक स्वीकृत होने वाला दावा तैयार करने में मदद करता है।"
-                  : "Our AI checks thousands of rules, catches common mistakes and helps you submit a claim that gets approved."}
+                  ? "जमा करने से पहले हम आपके विवरण EPFO नियमों के आधार पर जाँचते हैं और सामान्य गलतियाँ पकड़ते हैं।"
+                  : "Before you file, we check your details against EPFO rules and catch the mistakes that usually cause rejections."}
               </p>
-              <div className="mt-3 flex flex-wrap gap-2">
-                <FeatureBadge icon={ShieldCheck} label={lang === "hi" ? "स्मार्ट जाँच" : "Smarter Checks"} />
-                <FeatureBadge icon={MessageSquare} label={lang === "hi" ? "सरल भाषा" : "Plain Language"} />
-                <FeatureBadge icon={RefreshCw} label={lang === "hi" ? "लेटेस्ट स्थिति" : "Claim Status"} />
-                <FeatureBadge icon={Sparkles} label={lang === "hi" ? "EPFO सदस्य" : "For EPFO Members"} />
-              </div>
             </div>
           </div>
         </Card>
@@ -294,220 +272,6 @@ export default function DashboardPage() {
         <p className="mt-6 text-center text-xs text-muted">{t("demoDisclaimer")}</p>
       </PageContainer>
     </AppShell>
-  );
-}
-
-/* ------------------------------------------------------------------ */
-/* Dropdown helper — shared open state + outside-click / Escape close  */
-/* ------------------------------------------------------------------ */
-function useDropdown() {
-  const [open, setOpen] = useState(false);
-  const ref = useRef<HTMLDivElement>(null);
-
-  useEffect(() => {
-    if (!open) return;
-    function handleClick(e: MouseEvent) {
-      if (ref.current && !ref.current.contains(e.target as Node)) setOpen(false);
-    }
-    function handleKey(e: KeyboardEvent) {
-      if (e.key === "Escape") setOpen(false);
-    }
-    document.addEventListener("mousedown", handleClick);
-    document.addEventListener("keydown", handleKey);
-    return () => {
-      document.removeEventListener("mousedown", handleClick);
-      document.removeEventListener("keydown", handleKey);
-    };
-  }, [open]);
-
-  return { open, setOpen, ref };
-}
-
-const dotTone: Record<string, string> = {
-  warning: "bg-warning",
-  success: "bg-success",
-  info: "bg-primary",
-};
-
-function NotificationBell({ lang, bankLinked }: { lang: string; bankLinked: boolean }) {
-  const { open, setOpen, ref } = useDropdown();
-
-  const items: { tone: "warning" | "success" | "info"; title: string; time: string }[] = [
-    ...(!bankLinked
-      ? [
-          {
-            tone: "warning" as const,
-            title:
-              lang === "hi"
-                ? "दावा अस्वीकृति से बचने के लिए अपना बैंक खाता लिंक करें।"
-                : "Link your bank account to avoid claim rejection.",
-            time: lang === "hi" ? "अभी" : "Just now",
-          },
-        ]
-      : []),
-    {
-      tone: "success" as const,
-      title: lang === "hi" ? "आपका KYC सत्यापित हो गया है।" : "Your KYC has been verified.",
-      time: lang === "hi" ? "2 घंटे पहले" : "2h ago",
-    },
-    {
-      tone: "info" as const,
-      title: lang === "hi" ? "आपकी PF पासबुक अपडेट हो गई है।" : "Your PF passbook was updated.",
-      time: lang === "hi" ? "1 दिन पहले" : "1d ago",
-    },
-  ];
-
-  return (
-    <div ref={ref} className="relative">
-      <button
-        onClick={() => setOpen((o) => !o)}
-        aria-label={lang === "hi" ? "सूचनाएं" : "Notifications"}
-        aria-haspopup="menu"
-        aria-expanded={open}
-        className="relative flex h-10 w-10 items-center justify-center rounded-full border border-line bg-surface text-muted transition-colors hover:border-primary/20 hover:text-ink"
-      >
-        <Bell size={18} />
-        <span
-          className={cn(
-            "absolute right-2.5 top-2.5 h-2 w-2 rounded-full ring-2 ring-surface",
-            bankLinked ? "bg-brand" : "bg-warning"
-          )}
-        />
-      </button>
-
-      {open && (
-        <div
-          role="menu"
-          className="absolute right-0 z-40 mt-2 w-72 rounded-2xl border border-line bg-surface p-2 shadow-card animate-fade-in"
-        >
-          <p className="px-3 py-2 text-xs font-semibold uppercase tracking-wide text-muted">
-            {lang === "hi" ? "सूचनाएं" : "Notifications"}
-          </p>
-          <div className="space-y-0.5">
-            {items.map((n, i) => (
-              <div
-                key={i}
-                className="flex items-start gap-2.5 rounded-lg px-3 py-2 transition-colors hover:bg-canvas"
-              >
-                <span className={cn("mt-1.5 h-2 w-2 shrink-0 rounded-full", dotTone[n.tone])} />
-                <div className="min-w-0">
-                  <p className="text-sm leading-snug text-ink">{n.title}</p>
-                  <p className="mt-0.5 text-[11px] text-muted">{n.time}</p>
-                </div>
-              </div>
-            ))}
-          </div>
-        </div>
-      )}
-    </div>
-  );
-}
-
-function UserMenu({
-  name,
-  uan,
-  initials,
-  lang,
-  onLogout,
-}: {
-  name: string;
-  uan: string;
-  initials: string;
-  lang: string;
-  onLogout: () => void;
-}) {
-  const { open, setOpen, ref } = useDropdown();
-
-  return (
-    <div ref={ref} className="relative">
-      <button
-        onClick={() => setOpen((o) => !o)}
-        aria-label={lang === "hi" ? "उपयोगकर्ता मेनू" : "User menu"}
-        aria-haspopup="menu"
-        aria-expanded={open}
-        className="flex items-center gap-1.5 rounded-full border border-line bg-surface py-1 pl-1 pr-2 transition-colors hover:border-primary/20"
-      >
-        <span className="flex h-8 w-8 items-center justify-center rounded-full bg-primary text-xs font-bold text-white">
-          {initials}
-        </span>
-        <ChevronDown
-          size={15}
-          className={cn("text-muted transition-transform", open && "rotate-180")}
-        />
-      </button>
-
-      {open && (
-        <div
-          role="menu"
-          className="absolute right-0 z-40 mt-2 w-60 rounded-2xl border border-line bg-surface p-2 shadow-card animate-fade-in"
-        >
-          <div className="flex items-center gap-3 px-3 py-2">
-            <span className="flex h-10 w-10 items-center justify-center rounded-full bg-primary text-sm font-bold text-white">
-              {initials}
-            </span>
-            <div className="min-w-0">
-              <p className="truncate text-sm font-semibold text-ink">{name}</p>
-              <p className="text-[11px] text-muted">UAN: {uan}</p>
-            </div>
-          </div>
-
-          <div className="my-1 h-px bg-line" />
-
-          <div className="space-y-0.5">
-            <MenuItem
-              icon={UserCircle}
-              label={lang === "hi" ? "KYC और प्रोफ़ाइल" : "KYC & Profile"}
-              onClick={() => setOpen(false)}
-            />
-            <MenuItem
-              icon={BookOpen}
-              label={lang === "hi" ? "पासबुक डाउनलोड करें" : "Download Passbook"}
-              onClick={() => setOpen(false)}
-            />
-            <MenuItem
-              icon={HelpCircle}
-              label={lang === "hi" ? "सहायता" : "Support"}
-              onClick={() => setOpen(false)}
-            />
-          </div>
-
-          <div className="my-1 h-px bg-line" />
-
-          <button
-            role="menuitem"
-            onClick={() => {
-              setOpen(false);
-              onLogout();
-            }}
-            className="flex w-full items-center gap-2.5 rounded-lg px-3 py-2 text-left text-sm font-medium text-danger transition-colors hover:bg-danger-soft"
-          >
-            <LogOut size={15} />
-            {lang === "hi" ? "लॉगआउट" : "Logout"}
-          </button>
-        </div>
-      )}
-    </div>
-  );
-}
-
-function MenuItem({
-  icon: Icon,
-  label,
-  onClick,
-}: {
-  icon: any;
-  label: string;
-  onClick?: () => void;
-}) {
-  return (
-    <button
-      role="menuitem"
-      onClick={onClick}
-      className="flex w-full items-center gap-2.5 rounded-lg px-3 py-2 text-left text-sm text-ink transition-colors hover:bg-canvas"
-    >
-      <Icon size={15} className="text-muted" />
-      {label}
-    </button>
   );
 }
 
@@ -552,14 +316,5 @@ function QuickAction({
       </div>
       <ArrowRight size={14} className="text-muted/50" />
     </button>
-  );
-}
-
-function FeatureBadge({ icon: Icon, label }: { icon: any; label: string }) {
-  return (
-    <span className="inline-flex items-center gap-1.5 rounded-full bg-white border border-line px-3 py-1.5 text-xs font-medium text-ink">
-      <Icon size={13} className="text-primary" />
-      {label}
-    </span>
   );
 }

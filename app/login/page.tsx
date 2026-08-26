@@ -18,24 +18,6 @@ import {
   HelpCircle,
 } from "lucide-react";
 
-const HOW_IT_WORKS = [
-  {
-    step: 1,
-    title: { en: "Enter your UAN", hi: "अपना UAN दर्ज करें" },
-    desc: { en: "We'll verify your identity.", hi: "हम आपकी पहचान सत्यापित करेंगे।" },
-  },
-  {
-    step: 2,
-    title: { en: "Verify with OTP", hi: "OTP से सत्यापित करें" },
-    desc: { en: "We'll send a code to your mobile.", hi: "हम आपके मोबाइल पर कोड भेजेंगे।" },
-  },
-  {
-    step: 3,
-    title: { en: "Start your claim", hi: "अपना दावा शुरू करें" },
-    desc: { en: "We'll guide you through the process.", hi: "हम प्रक्रिया में आपका मार्गदर्शन करेंगे।" },
-  },
-];
-
 const COMMON_ISSUES = [
   { en: "Name mismatch between Aadhaar and UAN", hi: "आधार और UAN के बीच नाम मिलान" },
   { en: "KYC not updated", hi: "KYC अपडेट नहीं" },
@@ -187,30 +169,6 @@ export default function LoginPage() {
 
           {/* ---------- Right sidebar ---------- */}
           <aside className="hidden space-y-4 lg:block">
-            {/* How it works */}
-            <Card>
-              <h3 className="mb-3 text-sm font-bold uppercase tracking-wide text-ink">
-                {lang === "hi" ? "यह कैसे काम करता है" : "How it works"}
-              </h3>
-              <div className="space-y-4">
-                {HOW_IT_WORKS.map((h) => (
-                  <div key={h.step} className="flex items-start gap-3">
-                    <span className="flex h-7 w-7 shrink-0 items-center justify-center rounded-full bg-primary text-xs font-bold text-white">
-                      {h.step}
-                    </span>
-                    <div className="min-w-0">
-                      <p className="text-sm font-medium text-ink">
-                        {lang === "hi" ? h.title.hi : h.title.en}
-                      </p>
-                      <p className="text-xs leading-relaxed text-muted">
-                        {lang === "hi" ? h.desc.hi : h.desc.en}
-                      </p>
-                    </div>
-                  </div>
-                ))}
-              </div>
-            </Card>
-
             {/* Common issues I prevent */}
             <Card>
               <h3 className="mb-3 text-sm font-bold uppercase tracking-wide text-ink">

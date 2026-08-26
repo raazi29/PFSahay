@@ -1,5 +1,5 @@
 // PFSahay design tokens — premium fintech product with deep navy primary.
-// Clean white canvas, deep navy/indigo primary, teal-green brand accent,
+// Clean white canvas, deep navy primary, indigo brand accent,
 // orange for document uploads/warnings, restrained and professional.
 export default {
   content: [
@@ -23,9 +23,9 @@ export default {
           light: "#3B5998",      // lighter navy for accents
         },
         brand: {
-          DEFAULT: "#2D8B6E",    // teal-green for logo/brand mark
-          soft: "#E8F5F0",
-          dark: "#1F6B52",
+          DEFAULT: "#4F46E5",    // indigo — accent, active/selected states, links
+          soft: "#EEF2FF",
+          dark: "#4338CA",
         },
         accent: {
           DEFAULT: "#E8743B",    // orange for upload CTAs, warnings

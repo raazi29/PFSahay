@@ -3,6 +3,7 @@
 import { useState } from "react";
 import { useRouter } from "next/navigation";
 import { AppShell, Header, PageContainer } from "@/components/layout/AppShell";
+import { TopBarActions } from "@/components/layout/TopBar";
 import { Button } from "@/components/ui/Button";
 import { Card } from "@/components/ui/Card";
 import { SummaryRowBordered as SummaryRow, ShareRow, HelpRow } from "@/components/ui/Helpers";
@@ -80,6 +81,19 @@ export default function SubmittedPage() {
     <AppShell topBar={false}>
       <Header title={lang === "hi" ? "दावा सबमिट" : "Claim Submitted"} />
       <PageContainer className="flex flex-col gap-5 pt-5">
+        {/* Desktop-only top actions row — no title text on this confirmation screen,
+            so we keep it to just the shared cluster for app-shell consistency. Sticky
+            so it stays visible while content scrolls. */}
+        <div className="sticky top-0 z-20 -mt-5 hidden justify-end bg-canvas/95 pt-5 pb-3 backdrop-blur-md lg:flex">
+          <TopBarActions
+            lang={lang}
+            bankLinked={user.bank.linked}
+            name={user.name}
+            uan={user.uan}
+            onLogout={() => router.push("/")}
+          />
+        </div>
+
         {/* Stepper — all five steps completed */}
         <Card className="!p-4">
           <ol className="flex items-start gap-1" aria-label={lang === "hi" ? "प्रगति" : "Progress"}>

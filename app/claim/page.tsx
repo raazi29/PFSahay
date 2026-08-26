@@ -3,6 +3,7 @@
 import { useState } from "react";
 import { useRouter } from "next/navigation";
 import { AppShell, Header, PageContainer } from "@/components/layout/AppShell";
+import { TopBarActions } from "@/components/layout/TopBar";
 import { Button } from "@/components/ui/Button";
 import { Card } from "@/components/ui/Card";
 import { Badge } from "@/components/ui/Badge";
@@ -19,7 +20,8 @@ import { useLanguage } from "@/context/LanguageContext";
 import { classifyReason } from "@/lib/ai";
 import { REASONS, CLAIM_PATHS } from "@/lib/mock-data/claims";
 import type { ClaimReasonKey, ClassificationOutput } from "@/lib/types";
-import { CheckCircle2 } from "lucide-react";
+import { cn } from "@/lib/cn";
+import { CheckCircle2, ChevronRight } from "lucide-react";
 
 type Phase = "reason" | "thinking" | "clarify" | "done";
 
@@ -32,21 +34,6 @@ const STEP_DEFS = [
   { key: "submit", en: "Submit", hi: "सबमिट" },
 ];
 
-const HOW_IT_WORKS = [
-  { step: 1, title: { en: "Reason", hi: "कारण" }, desc: { en: "Tell us why you need your PF", hi: "बताएं आपको PF क्यों चाहिए" } },
-  { step: 2, title: { en: "Check", hi: "जाँच" }, desc: { en: "We run checks against EPFO rules", hi: "हम EPFO नियमों के खिलाफ जाँच करते हैं" } },
-  { step: 3, title: { en: "Documents", hi: "दस्तावेज़" }, desc: { en: "Upload supporting documents", hi: "सहायक दस्तावेज़ अपलोड करें" } },
-  { step: 4, title: { en: "Review", hi: "समीक्षा" }, desc: { en: "Verify and submit", hi: "सत्यापित करें और सबमिट करें" } },
-  { step: 5, title: { en: "Submit", hi: "सबमिट" }, desc: { en: "Track your claim status", hi: "अपनी दावा स्थिति ट्रैक करें" } },
-];
-
-const COMMON_ISSUES = [
-  { en: "Name mismatch between Aadhaar and UAN", hi: "आधार और UAN के बीच नाम मिलान" },
-  { en: "KYC not updated", hi: "KYC अपडेट नहीं है" },
-  { en: "Bank not linked", hi: "बैंक लिंक नहीं है" },
-  { en: "Incomplete documents", hi: "अधूरे दस्तावेज़" },
-  { en: "Service history gaps", hi: "सेवा इतिहास में अंतराल" },
-];
 
 export default function ClaimAssistantPage() {
   const router = useRouter();
@@ -144,7 +131,6 @@ export default function ClaimAssistantPage() {
   void QuickReply;
 
   const activeStepKey = phase === "done" ? "check" : "reason";
-  const activeStepIdx = STEP_DEFS.findIndex((s) => s.key === activeStepKey);
   const steps = STEP_DEFS.map((s) => ({ key: s.key, label: lang === "hi" ? s.hi : s.en }));
   const detectedPath = claim.claimPath ? CLAIM_PATHS[claim.claimPath] : null;
 
@@ -153,41 +139,95 @@ export default function ClaimAssistantPage() {
       ? "आइए आपकी ज़रूरत समझें और सही रास्ता खोजें।"
       : "Let's understand your need and find the right way.";
 
-  // Progress checklist shown inside the "Your Claim Path" card.
-  const claimChecklist = [
-    { label: lang === "hi" ? "कारण समझा गया" : "Reason understood", done: !!claim.reason },
-    { label: lang === "hi" ? "दावा पथ पहचाना" : "Claim path detected", done: !!detectedPath },
-    { label: lang === "hi" ? "रिकॉर्ड जाँच" : "Records check", done: false },
-    { label: lang === "hi" ? "दस्तावेज़ तैयार" : "Documents ready", done: false },
-    { label: lang === "hi" ? "समीक्षा और सबमिट" : "Review & submit", done: false },
+  // "Claim Progress" vertical timeline shown in the sidebar — mirrors the top
+  // Stepper's five stages with a one-line sub-description per step.
+  const claimProgressSteps = [
+    {
+      key: "reason",
+      en: "Reason",
+      hi: "कारण",
+      subEn: "Tell us why you need your PF",
+      subHi: "हमें बताएं कि आपको PF की ज़रूरत क्यों है",
+    },
+    {
+      key: "verification",
+      en: "Verification",
+      hi: "सत्यापन",
+      subEn: "We'll verify your details",
+      subHi: "हम आपके विवरण सत्यापित करेंगे",
+    },
+    {
+      key: "documents",
+      en: "Documents",
+      hi: "दस्तावेज़",
+      subEn: "Upload required documents",
+      subHi: "आवश्यक दस्तावेज़ अपलोड करें",
+    },
+    {
+      key: "review",
+      en: "Review",
+      hi: "समीक्षा",
+      subEn: "Review your claim",
+      subHi: "अपने दावे की समीक्षा करें",
+    },
+    {
+      key: "submit",
+      en: "Submit",
+      hi: "सबमिट",
+      subEn: "Submit to EPFO",
+      subHi: "EPFO को सबमिट करें",
+    },
   ];
+  // Only "Reason" and "Verification" are reachable from this screen.
+  const progressActiveIndex = phase === "done" ? 1 : 0;
 
   return (
     <AppShell topBar={false}>
       {/* Mobile header */}
       <Header title={t("claimAssistant")} onBack={() => router.push("/dashboard")} />
 
-      {/* Desktop header — "← Claim Assistant" + subtitle */}
-      <div className="hidden border-b border-line bg-surface lg:block">
-        <div className="mx-auto w-full max-w-4xl px-8 pt-6 pb-5">
-          <div className="flex items-center gap-3">
-            <button
-              onClick={() => router.push("/dashboard")}
-              aria-label={t("back")}
-              className="flex h-9 w-9 items-center justify-center rounded-full text-muted transition-colors hover:bg-canvas hover:text-ink"
-            >
-              <BackIcon />
-            </button>
-            <div>
-              <h1 className="text-xl font-bold tracking-tight text-ink">{t("claimAssistant")}</h1>
-              <p className="text-sm text-muted">{headerSubtitle}</p>
+      {/* Desktop header + stepper — sticky as one unit so both stay visible while the chat scrolls */}
+      <div className="sticky top-0 z-20 hidden lg:block">
+        <div className="border-b border-line bg-surface">
+          <div className="mx-auto flex w-full max-w-4xl items-center justify-between px-8 pt-6 pb-5">
+            <div className="flex items-center gap-3">
+              <button
+                onClick={() => router.push("/dashboard")}
+                aria-label={t("back")}
+                className="flex h-9 w-9 items-center justify-center rounded-full text-muted transition-colors hover:bg-canvas hover:text-ink"
+              >
+                <BackIcon />
+              </button>
+              <div>
+                <div className="flex items-center gap-2">
+                  <h1 className="text-xl font-bold tracking-tight text-ink">{t("claimAssistant")}</h1>
+                  <span className="inline-flex items-center rounded-full bg-brand-soft px-2.5 py-0.5 text-[11px] font-bold uppercase tracking-wide text-brand">
+                    {lang === "hi" ? "AI संचालित" : "AI Powered"}
+                  </span>
+                </div>
+                <p className="text-sm text-muted">{headerSubtitle}</p>
+              </div>
             </div>
+            <TopBarActions
+              lang={lang}
+              bankLinked={user.bank.linked}
+              name={user.name}
+              uan={user.uan}
+              onLogout={() => router.push("/")}
+            />
+          </div>
+        </div>
+
+        {/* Stepper */}
+        <div className="border-b border-line bg-surface/60 px-4 py-4 sm:px-6 lg:px-8">
+          <div className="mx-auto w-full max-w-4xl">
+            <Stepper steps={steps} current={activeStepKey} />
           </div>
         </div>
       </div>
 
-      {/* Stepper */}
-      <div className="border-b border-line bg-surface/60 px-4 py-4 sm:px-6 lg:px-8">
+      {/* Stepper — mobile only (desktop stepper lives in the sticky block above) */}
+      <div className="border-b border-line bg-surface/60 px-4 py-4 sm:px-6 lg:hidden">
         <div className="mx-auto w-full max-w-4xl">
           <Stepper steps={steps} current={activeStepKey} />
         </div>
@@ -272,19 +312,20 @@ export default function ClaimAssistantPage() {
                     {lang === "hi" ? detectedPath.summaryHi : detectedPath.summary}
                   </p>
 
-                  <div className="space-y-2 border-t border-line pt-3">
-                    {claimChecklist.map((c, i) => (
-                      <div key={i} className="flex items-center gap-2.5">
-                        {c.done ? (
-                          <CheckCircle2 size={16} className="shrink-0 text-success" />
-                        ) : (
-                          <span className="h-4 w-4 shrink-0 rounded-full border-2 border-line" />
-                        )}
-                        <span className={`text-sm ${c.done ? "text-ink" : "text-muted"}`}>
-                          {c.label}
-                        </span>
-                      </div>
-                    ))}
+                  <div className="rounded-xl bg-canvas p-3">
+                    <p className="text-[11px] font-semibold uppercase tracking-wide text-muted">
+                      {lang === "hi" ? "अनुमानित दावा राशि" : "Estimated claim amount"}
+                    </p>
+                    <p className="text-xl font-bold text-ink">
+                      {new Intl.NumberFormat("en-IN", {
+                        style: "currency",
+                        currency: "INR",
+                        maximumFractionDigits: 0,
+                      }).format(user.balance)}
+                    </p>
+                    <p className="mt-0.5 text-[11px] text-muted">
+                      {lang === "hi" ? "यह केवल एक अनुमान है। अंतिम राशि भिन्न हो सकती है।" : "This is an estimate only. Final amount may vary."}
+                    </p>
                   </div>
                 </div>
               ) : (
@@ -296,64 +337,86 @@ export default function ClaimAssistantPage() {
               )}
             </Card>
 
-            {/* How it works */}
+            {/* Claim Progress — connected vertical timeline */}
             <Card>
               <h3 className="mb-3 text-sm font-bold uppercase tracking-wide text-ink">
-                {lang === "hi" ? "यह कैसे काम करता है" : "How it works"}
+                {lang === "hi" ? "दावा प्रगति" : "Claim Progress"}
               </h3>
-              <div className="space-y-3">
-                {HOW_IT_WORKS.map((h) => (
-                  <div key={h.step} className="flex items-start gap-3">
-                    <span
-                      className={`flex h-6 w-6 shrink-0 items-center justify-center rounded-full text-xs font-bold ${
-                        h.step <= activeStepIdx + 1 ? "bg-primary text-white" : "bg-line text-muted"
-                      }`}
+              <ol>
+                {claimProgressSteps.map((s, i) => {
+                  const active = i === progressActiveIndex;
+                  const done = i < progressActiveIndex;
+                  const isLast = i === claimProgressSteps.length - 1;
+                  return (
+                    <li
+                      key={s.key}
+                      className={cn(
+                        "flex gap-3 rounded-lg",
+                        active && "-mx-2 bg-brand-soft/60 px-2 py-1.5"
+                      )}
                     >
-                      {h.step}
-                    </span>
-                    <div>
-                      <p className="text-sm font-medium text-ink">
-                        {lang === "hi" ? h.title.hi : h.title.en}
-                      </p>
-                      <p className="text-xs text-muted">{lang === "hi" ? h.desc.hi : h.desc.en}</p>
-                    </div>
-                  </div>
-                ))}
-              </div>
+                      <div className="flex flex-col items-center">
+                        <span
+                          className={cn(
+                            "flex h-7 w-7 shrink-0 items-center justify-center rounded-full text-xs font-semibold",
+                            active && "bg-brand text-white ring-4 ring-brand-soft",
+                            done && !active && "bg-brand text-white",
+                            !active && !done && "border-2 border-line text-muted"
+                          )}
+                          aria-current={active ? "step" : undefined}
+                        >
+                          {i + 1}
+                        </span>
+                        {!isLast && (
+                          <span
+                            className={cn("my-1 w-0.5 flex-1", done ? "bg-brand" : "bg-line")}
+                            aria-hidden
+                          />
+                        )}
+                      </div>
+                      <div className={cn("min-w-0", isLast ? "pb-0" : "pb-4")}>
+                        <p
+                          className={cn(
+                            "text-sm font-semibold",
+                            active || done ? "text-ink" : "text-muted"
+                          )}
+                        >
+                          {lang === "hi" ? s.hi : s.en}
+                        </p>
+                        <p className="mt-0.5 text-xs text-muted">
+                          {active
+                            ? lang === "hi"
+                              ? "आप यहां हैं"
+                              : "You are here"
+                            : lang === "hi"
+                              ? s.subHi
+                              : s.subEn}
+                        </p>
+                      </div>
+                    </li>
+                  );
+                })}
+              </ol>
             </Card>
 
-            {/* Common issues I check */}
-            <Card>
-              <h3 className="mb-3 text-sm font-bold uppercase tracking-wide text-ink">
-                {lang === "hi" ? "मैं सामान्य समस्याएँ जाँचता हूँ" : "Common issues I check"}
-              </h3>
-              <ul className="space-y-2.5">
-                {COMMON_ISSUES.map((issue, i) => (
-                  <li key={i} className="flex items-start gap-2 text-sm text-muted">
-                    <WarnIcon />
-                    <span>{lang === "hi" ? issue.hi : issue.en}</span>
-                  </li>
-                ))}
-              </ul>
-            </Card>
-
-            {/* Your data is secure */}
+            {/* We protect your data */}
             <Card className="border-brand/15 bg-brand-soft">
-              <div className="flex items-start gap-3">
+              <button type="button" className="flex w-full items-start gap-3 text-left">
                 <span className="flex h-9 w-9 shrink-0 items-center justify-center rounded-xl bg-brand/10 text-brand">
                   <ShieldIcon />
                 </span>
-                <div>
+                <div className="min-w-0 flex-1">
                   <h3 className="text-sm font-bold text-ink">
-                    {lang === "hi" ? "आपका डेटा सुरक्षित है" : "Your data is secure"}
+                    {lang === "hi" ? "हम आपके डेटा की सुरक्षा करते हैं" : "We protect your data"}
                   </h3>
                   <p className="mt-1 text-xs leading-relaxed text-muted">
                     {lang === "hi"
-                      ? "आपका विवरण एन्क्रिप्टेड है और केवल आपका दावा तैयार करने के लिए उपयोग होता है। हम इसे कभी साझा नहीं करते।"
-                      : "Your details are encrypted and used only to prepare your claim. We never share them."}
+                      ? "256-बिट एन्क्रिप्शन • सुरक्षित सर्वर"
+                      : "256-bit encryption • Secure servers"}
                   </p>
                 </div>
-              </div>
+                <ChevronRight size={18} className="mt-1 shrink-0 text-muted" aria-hidden />
+              </button>
             </Card>
           </div>
         </div>
@@ -435,10 +498,10 @@ export default function ClaimAssistantPage() {
 
 /* ----------------------------- UI primitives ----------------------------- */
 
-// Brand-coloured assistant avatar shown beside bot messages.
+// Soft brand-coloured assistant avatar shown beside bot messages.
 function BotAvatar() {
   return (
-    <span className="flex h-8 w-8 shrink-0 items-center justify-center rounded-full bg-brand text-white shadow-soft">
+    <span className="flex h-8 w-8 shrink-0 items-center justify-center rounded-full bg-brand-soft text-brand">
       <svg width="16" height="16" viewBox="0 0 24 24" fill="currentColor" aria-hidden>
         <path d="M12 2l1.7 5.5L19 9l-5.3 1.5L12 16l-1.7-5.5L5 9l5.3-1.5L12 2z" />
       </svg>
@@ -497,28 +560,6 @@ function BackIcon() {
     >
       <path d="M19 12H5" />
       <path d="m12 19-7-7 7-7" />
-    </svg>
-  );
-}
-
-// Orange warning icon for the "Common issues I check" list.
-function WarnIcon() {
-  return (
-    <svg
-      width="15"
-      height="15"
-      viewBox="0 0 24 24"
-      fill="none"
-      stroke="currentColor"
-      strokeWidth="2"
-      strokeLinecap="round"
-      strokeLinejoin="round"
-      className="mt-0.5 shrink-0 text-accent"
-      aria-hidden
-    >
-      <path d="M10.29 3.86 1.82 18a2 2 0 0 0 1.71 3h16.94a2 2 0 0 0 1.71-3L13.71 3.86a2 2 0 0 0-3.42 0z" />
-      <path d="M12 9v4" />
-      <path d="M12 17h.01" />
     </svg>
   );
 }

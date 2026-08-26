@@ -16,7 +16,7 @@ const base =
 const variants: Record<Variant, string> = {
   // Main CTAs — deep navy (#1B2E4B)
   primary: "bg-primary text-white hover:bg-primary-ink active:bg-primary-ink",
-  // Action buttons (Claim/Withdraw, Submit, Chat Now) — teal-green brand (#2D8B6E)
+  // Action buttons (Claim/Withdraw, Submit, Chat Now) — indigo brand (#4F46E5)
   brand: "bg-brand text-white hover:bg-brand-dark active:bg-brand-dark",
   // Outlined
   secondary: "bg-surface text-ink border border-line hover:bg-canvas active:bg-canvas",

@@ -2,6 +2,7 @@
 
 import { useRouter } from "next/navigation";
 import { AppShell, Header, PageContainer } from "@/components/layout/AppShell";
+import { TopBarActions } from "@/components/layout/TopBar";
 import { Button } from "@/components/ui/Button";
 import { Card } from "@/components/ui/Card";
 import { Stepper } from "@/components/ui/Stepper";
@@ -47,6 +48,10 @@ export default function DocumentsPage() {
   const allRequired = requiredDocs.every((d) => d.uploaded);
   const detectedPath = claim.claimPath ? CLAIM_PATHS[claim.claimPath] : null;
 
+  const totalDocs = claim.documents.length;
+  const uploadedDocs = claim.documents.filter((d) => d.uploaded).length;
+  const progressPct = totalDocs > 0 ? Math.round((uploadedDocs / totalDocs) * 100) : 0;
+
   const steps = STEP_DEFS.map((s) => ({ key: s.key, label: lang === "hi" ? s.hi : s.en }));
 
   return (
@@ -56,8 +61,8 @@ export default function DocumentsPage() {
         onBack={() => router.push("/claim/verify")}
       />
       <PageContainer className="flex flex-col gap-5 pt-5">
-        {/* Title */}
-        <div>
+        {/* Title — mobile only (Header above already shows the title on mobile via the sticky bar) */}
+        <div className="lg:hidden">
           <h1 className="text-[24px] font-bold tracking-tight text-primary">
             {lang === "hi" ? "दस्तावेज़ अपलोड करें" : "Upload Documents"}
           </h1>
@@ -66,6 +71,27 @@ export default function DocumentsPage() {
               ? "लगभग हो गया! अपने दावे के लिए आवश्यक दस्तावेज़ अपलोड करें।"
               : "Almost there! Upload the required documents for your claim."}
           </p>
+        </div>
+
+        {/* Desktop header row — title on the left, secure badge / bell / avatar on the right; sticky so it stays visible while content scrolls */}
+        <div className="sticky top-0 z-20 -mt-5 hidden items-center justify-between bg-canvas/95 pt-5 pb-3 backdrop-blur-md lg:flex">
+          <div>
+            <h1 className="text-[24px] font-bold tracking-tight text-primary">
+              {lang === "hi" ? "दस्तावेज़ अपलोड करें" : "Upload Documents"}
+            </h1>
+            <p className="mt-1 text-[15px] leading-relaxed text-muted">
+              {lang === "hi"
+                ? "लगभग हो गया! अपने दावे के लिए आवश्यक दस्तावेज़ अपलोड करें।"
+                : "Almost there! Upload the required documents for your claim."}
+            </p>
+          </div>
+          <TopBarActions
+            lang={lang}
+            bankLinked={user.bank.linked}
+            name={user.name}
+            uan={user.uan}
+            onLogout={() => router.push("/")}
+          />
         </div>
 
         {/* Stepper — Step 3 (Documents) active */}
@@ -102,7 +128,7 @@ export default function DocumentsPage() {
 
             {/* Documents Checklist */}
             <div>
-              <div className="mb-3 flex items-center justify-between">
+              <div className="mb-1.5 flex flex-wrap items-center justify-between gap-2">
                 <h2 className="text-lg font-bold text-primary">
                   {lang === "hi" ? "दस्तावेज़ जाँच सूची" : "Documents Checklist"}
                 </h2>
@@ -116,6 +142,20 @@ export default function DocumentsPage() {
                     ? `${requiredTotal} में से ${requiredUploaded} आवश्यक अपलोड`
                     : `${requiredUploaded} of ${requiredTotal} required uploaded`}
                 </span>
+              </div>
+              {/* Overall upload progress bar */}
+              <div className="mb-3 flex items-center gap-3">
+                <span className="shrink-0 text-xs font-medium text-muted">
+                  {lang === "hi"
+                    ? `${totalDocs} में से ${uploadedDocs} अपलोड`
+                    : `${uploadedDocs} / ${totalDocs} uploaded`}
+                </span>
+                <div className="h-1.5 flex-1 overflow-hidden rounded-full bg-line">
+                  <div
+                    className="h-full rounded-full bg-brand transition-all"
+                    style={{ width: `${progressPct}%` }}
+                  />
+                </div>
               </div>
               <div className="space-y-3">
                 {claim.documents.map((doc) => (

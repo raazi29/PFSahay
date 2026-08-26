@@ -3,6 +3,7 @@
 import { useState, useEffect } from "react";
 import { useRouter } from "next/navigation";
 import { AppShell, Header, PageContainer } from "@/components/layout/AppShell";
+import { TopBarActions } from "@/components/layout/TopBar";
 import { Button } from "@/components/ui/Button";
 import { Card } from "@/components/ui/Card";
 import { Timeline, type TimelineStage } from "@/components/tracker/Timeline";
@@ -126,7 +127,7 @@ const PROGRESS_STEPS: {
 export default function TrackerPage() {
   const router = useRouter();
   const { t, lang } = useLanguage();
-  const { claim } = useClaim();
+  const { claim, user } = useClaim();
   const status: ClaimStatusKey = claim.status ?? "under_verification";
   const copy = lang === "hi" ? HI[status] : STATUS_COPY[status];
   const actionText = lang === "hi" ? HI[status].action : STATUS_COPY[status].action;
@@ -161,16 +162,27 @@ export default function TrackerPage() {
     <AppShell topBar={false}>
       <Header title={lang === "hi" ? "दावा ट्रैकर" : "Claim Tracker"} onBack={() => router.push("/dashboard")} />
       <PageContainer className="flex flex-col gap-5 pt-5">
-        {/* Title */}
-        <div>
-          <h1 className="text-[26px] font-bold tracking-tight text-ink">
-            {lang === "hi" ? "दावा ट्रैकर" : "Claim Tracker"}
-          </h1>
-          <p className="mt-1 text-[15px] leading-relaxed text-muted">
-            {lang === "hi"
-              ? "अपने PF दावे को वास्तविक समय में ट्रैक करें और जानें कि आगे क्या होगा।"
-              : "Track your PF claim in real time and know what happens next."}
-          </p>
+        {/* Title — sticky so it stays visible while content scrolls */}
+        <div className="sticky top-0 z-20 -mt-5 flex items-start justify-between gap-2 bg-canvas/95 pt-5 pb-3 backdrop-blur-md">
+          <div>
+            <h1 className="text-[26px] font-bold tracking-tight text-ink">
+              {lang === "hi" ? "दावा ट्रैकर" : "Claim Tracker"}
+            </h1>
+            <p className="mt-1 text-[15px] leading-relaxed text-muted">
+              {lang === "hi"
+                ? "अपने PF दावे को वास्तविक समय में ट्रैक करें और जानें कि आगे क्या होगा।"
+                : "Track your PF claim in real time and know what happens next."}
+            </p>
+          </div>
+          <div className="hidden shrink-0 lg:flex">
+            <TopBarActions
+              lang={lang}
+              bankLinked={user.bank.linked}
+              name={user.name}
+              uan={user.uan}
+              onLogout={() => router.push("/")}
+            />
+          </div>
         </div>
 
         <div className="grid items-start gap-5 lg:grid-cols-[1fr_300px]">

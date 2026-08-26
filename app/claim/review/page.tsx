@@ -3,6 +3,7 @@
 import { useState } from "react";
 import { useRouter } from "next/navigation";
 import { AppShell, Header, PageContainer } from "@/components/layout/AppShell";
+import { TopBarActions } from "@/components/layout/TopBar";
 import { Button } from "@/components/ui/Button";
 import { Card } from "@/components/ui/Card";
 import { Modal } from "@/components/ui/Modal";
@@ -26,7 +27,6 @@ import {
   MessageSquare,
   Phone,
   BookOpen,
-  Sparkles,
 } from "lucide-react";
 
 const rupee = new Intl.NumberFormat("en-IN", {
@@ -97,26 +97,37 @@ export default function ReviewPage() {
           <Stepper steps={STEPS} current="review" />
         </div>
 
-        {/* Title */}
-        <div>
-          <h1 className="text-[24px] font-bold text-ink tracking-tight">
-            {lang === "hi" ? "अपना दावा समीक्षा करें" : "Review Your Claim"}
-          </h1>
-          <p className="mt-1 text-[15px] text-muted leading-relaxed">
-            {lang === "hi"
-              ? "सबमिट करने से पहले सभी विवरण जांच लें।"
-              : "Please review all details before we submit your claim."}
-          </p>
+        {/* Title — sticky so it stays visible while content scrolls */}
+        <div className="sticky top-0 z-20 -mt-5 flex items-start justify-between gap-2 bg-canvas/95 pt-5 pb-3 backdrop-blur-md">
+          <div>
+            <h1 className="text-[24px] font-bold text-ink tracking-tight">
+              {lang === "hi" ? "अपना दावा समीक्षा करें" : "Review Your Claim"}
+            </h1>
+            <p className="mt-1 text-[15px] text-muted leading-relaxed">
+              {lang === "hi"
+                ? "सबमिट करने से पहले सभी विवरण जांच लें।"
+                : "Please review all details before we submit your claim."}
+            </p>
+          </div>
+          <div className="hidden shrink-0 lg:flex">
+            <TopBarActions
+              lang={lang}
+              bankLinked={user.bank.linked}
+              name={user.name}
+              uan={user.uan}
+              onLogout={() => router.push("/")}
+            />
+          </div>
         </div>
 
         <div className="grid gap-5 lg:grid-cols-[1fr_280px]">
           {/* Main column */}
           <div className="space-y-5">
             {/* Everything looks good banner */}
-            <Card className="border-success/30 bg-gradient-to-r from-success/10 to-success/5">
+            <Card className="border-success/30 bg-success/5">
               <div className="flex items-center gap-4">
                 <div className="h-11 w-11 rounded-xl bg-success/15 flex items-center justify-center shrink-0">
-                  <Sparkles size={20} className="text-success" />
+                  <CheckCircle2 size={22} className="text-success" />
                 </div>
                 <div className="flex-1 min-w-0">
                   <h2 className="text-lg font-bold text-ink">
@@ -127,9 +138,6 @@ export default function ReviewPage() {
                       ? "हमने आपके द्वारा दिए गए विवरण के आधार पर आपका दावा तैयार किया है।"
                       : "We've prepared your claim based on the information you provided."}
                   </p>
-                </div>
-                <div className="h-8 w-8 rounded-full bg-success flex items-center justify-center shrink-0">
-                  <CheckCircle2 size={18} className="text-white" />
                 </div>
               </div>
             </Card>
