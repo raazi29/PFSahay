@@ -19,11 +19,11 @@ import {
 
 const NAV_ITEMS = [
   { key: "dashboard", label: "Dashboard", icon: LayoutDashboard, path: "/dashboard" },
-  { key: "claims", label: "My Claims", icon: FileText, path: null },
+  { key: "claims", label: "My Claims", icon: FileText, path: "/claims" },
   { key: "assistant", label: "Claim Assistant", icon: Bot, path: "/claim" },
   { key: "documents", label: "Documents", icon: FolderOpen, path: "/claim/documents" },
-  { key: "kyc", label: "KYC & Profile", icon: UserCircle, path: null },
-  { key: "support", label: "Support", icon: HelpCircle, path: null },
+  { key: "kyc", label: "KYC & Profile", icon: UserCircle, path: "/profile" },
+  { key: "support", label: "Support", icon: HelpCircle, path: "/support" },
 ] as const;
 
 export function SidebarContent() {
@@ -33,7 +33,7 @@ export function SidebarContent() {
 
   return (
     <>
-      {/* Logo — teal-green people mark */}
+      {/* Logo — indigo brand mark */}
       <div className="px-5 py-5 border-b border-line">
         <div className="flex items-center gap-2.5">
           <div className="flex h-10 w-10 items-center justify-center rounded-xl bg-brand text-white shadow-soft">

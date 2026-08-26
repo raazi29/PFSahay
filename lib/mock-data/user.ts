@@ -15,6 +15,10 @@ export interface MockUser {
   kyc: { aadhaar: boolean; pan: boolean; bank: boolean; mobile: boolean; email: boolean };
   shares: { employee: number; employer: number; pension: number };
   lastUpdated: string;
+  dob: string;
+  mobile: string;
+  email: string;
+  address: string;
 }
 
 // Deterministic golden-path user. The UAN name intentionally differs from the
@@ -37,6 +41,10 @@ export const MOCK_USER: MockUser = {
   shares: { employee: 168320, employer: 116330, pension: 15820 },
   lastUpdated: "24 Aug 2025 • 9:30 AM",
   kyc: { aadhaar: true, pan: true, bank: true, mobile: true, email: true },
+  dob: "15 Feb 1996",
+  mobile: "+91 98765 43210",
+  email: "arjun.mehta@email.com",
+  address: "Bangalore, Karnataka - 560001",
 };
 
 export function defaultDocuments(): DocumentItem[] {

@@ -3,6 +3,7 @@
 import { useEffect, useRef, useState } from "react";
 import { useRouter } from "next/navigation";
 import { AppShell, Header, PageContainer } from "@/components/layout/AppShell";
+import { TopBarActions } from "@/components/layout/TopBar";
 import { Button } from "@/components/ui/Button";
 import { Card } from "@/components/ui/Card";
 import { Stepper } from "@/components/ui/Stepper";
@@ -64,6 +65,7 @@ export default function VerifyPage() {
   const [loading, setLoading] = useState(true);
   // Name mismatch is the signature issue — expand it by default per the design.
   const [expandedItem, setExpandedItem] = useState<string | null>("name_mismatch");
+  const [showWhyWeCheck, setShowWhyWeCheck] = useState(false);
   const nameMismatchRef = useRef<HTMLDivElement>(null);
 
   useEffect(() => {
@@ -96,28 +98,39 @@ export default function VerifyPage() {
         onBack={() => router.push("/claim")}
       />
       <PageContainer className="flex flex-col gap-5 pt-5">
-        {/* Title / header block */}
-        <div className="flex items-start gap-2">
-          <button
-            onClick={() => router.push("/claim")}
-            aria-label={lang === "hi" ? "वापस" : "Back"}
-            className="mt-0.5 hidden h-9 w-9 shrink-0 items-center justify-center rounded-full text-ink transition-colors hover:bg-surface lg:inline-flex"
-          >
-            <ArrowLeft size={20} />
-          </button>
-          <div>
-            <h1 className="text-[24px] font-bold tracking-tight text-ink">
-              {lang === "hi" ? "अपना विवरण सत्यापित करें" : "Verify Your Details"}
-            </h1>
-            <p className="mt-1 text-[15px] leading-relaxed text-muted">
-              {lang === "hi"
-                ? "दावा तैयार करने से पहले कुछ चीजें ठीक करते हैं।"
-                : "Let's fix a few things before we prepare your claim."}
-            </p>
+        {/* Title / header block — sticky so it stays visible while content scrolls */}
+        <div className="sticky top-0 z-20 -mt-5 flex items-start justify-between gap-2 bg-canvas/95 pt-5 pb-3 backdrop-blur-md">
+          <div className="flex items-start gap-2">
+            <button
+              onClick={() => router.push("/claim")}
+              aria-label={lang === "hi" ? "वापस" : "Back"}
+              className="mt-0.5 hidden h-9 w-9 shrink-0 items-center justify-center rounded-full text-ink transition-colors hover:bg-surface lg:inline-flex"
+            >
+              <ArrowLeft size={20} />
+            </button>
+            <div>
+              <h1 className="text-[24px] font-bold tracking-tight text-ink">
+                {lang === "hi" ? "अपना विवरण सत्यापित करें" : "Verify Your Details"}
+              </h1>
+              <p className="mt-1 text-[15px] leading-relaxed text-muted">
+                {lang === "hi"
+                  ? "दावा तैयार करने से पहले कुछ चीजें ठीक करते हैं।"
+                  : "Let's fix a few things before we prepare your claim."}
+              </p>
+            </div>
+          </div>
+          <div className="hidden shrink-0 lg:flex">
+            <TopBarActions
+              lang={lang}
+              bankLinked={user.bank.linked}
+              name={user.name}
+              uan={user.uan}
+              onLogout={() => router.push("/")}
+            />
           </div>
         </div>
 
-        {/* Progress stepper — Step 2 (Check) active in brand teal-green */}
+        {/* Progress stepper — Step 2 (Check) active in brand indigo */}
         <VerifyStepper current="check" lang={lang} />
 
         {/* Alert banner */}
@@ -167,11 +180,25 @@ export default function VerifyPage() {
                       : "We're checking your details with our records."}
                   </p>
                 </div>
-                <button className="flex items-center gap-1.5 text-sm font-medium text-primary">
+                <button
+                  onClick={() => setShowWhyWeCheck((v) => !v)}
+                  aria-expanded={showWhyWeCheck}
+                  className="flex shrink-0 items-center gap-1.5 text-sm font-medium text-primary"
+                >
                   {lang === "hi" ? "हम क्यों जाँचते हैं?" : "Why we check?"}
                   <Info size={14} />
                 </button>
               </div>
+
+              {showWhyWeCheck && (
+                <div className="mb-4 animate-fade-in rounded-xl bg-canvas px-4 py-3">
+                  <p className="text-sm leading-relaxed text-muted">
+                    {lang === "hi"
+                      ? "EPFO कई दावों को केवल इसलिए अस्वीकार करता है क्योंकि आधार, UAN और बैंक रिकॉर्ड में विवरण मेल नहीं खाते। हम जमा करने से पहले इन्हें जाँचते हैं ताकि आपका दावा बिना देरी के आगे बढ़े।"
+                      : "EPFO rejects many claims simply because details in Aadhaar, UAN and bank records don't match. We check these before you file, so your claim moves forward without delay."}
+                  </p>
+                </div>
+              )}
 
               {loading ? (
                 <div className="space-y-2">
@@ -416,7 +443,7 @@ export default function VerifyPage() {
           <Button variant="secondary" onClick={() => router.push("/claim")}>
             {t("back")}
           </Button>
-          {/* Native button so the brand (teal-green) background applies reliably —
+          {/* Native button so the brand (indigo) background applies reliably —
               cn() uses clsx without tailwind-merge, so it can't override the
               Button component's built-in bg-primary. */}
           <button
@@ -450,7 +477,7 @@ export default function VerifyPage() {
 }
 
 /**
- * Progress stepper for the claim flow, styled with the brand (teal-green)
+ * Progress stepper for the claim flow, styled with the brand (indigo)
  * palette for the active/completed steps to match the design reference.
  */
 function VerifyStepper({ current, lang }: { current: string; lang: string }) {
