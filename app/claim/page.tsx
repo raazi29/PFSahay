@@ -426,8 +426,9 @@ export default function ClaimAssistantPage() {
           </div>
         </div>
 
-        {/* Input area (sticky bottom) */}
-        <div className="sticky bottom-0 -mx-4 border-t border-line bg-canvas/95 px-4 pb-5 pt-4 backdrop-blur-md sm:-mx-6 sm:px-6 lg:-mx-8 lg:px-8">
+        {/* Input area (sticky bottom) — -mb-12 cancels PageContainer's trailing pb-12
+            so this can actually stick to the viewport bottom instead of detaching early. */}
+        <div className="sticky bottom-0 -mx-4 -mb-12 border-t border-line bg-canvas/95 px-4 pb-5 pt-4 backdrop-blur-md sm:-mx-6 sm:px-6 lg:-mx-8 lg:px-8">
           {phase === "reason" && (
             <div className="space-y-3">
               <p className="text-xs font-semibold uppercase tracking-wide text-muted">

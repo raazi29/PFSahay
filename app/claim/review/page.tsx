@@ -267,25 +267,6 @@ export default function ReviewPage() {
                 retryLabel={t("retry")}
               />
             )}
-
-            {/* Actions */}
-            <div className="sticky bottom-0 -mx-5 flex gap-3 border-t border-line bg-canvas/95 px-5 pb-5 pt-3 shadow-[0_-8px_24px_rgba(17,33,47,0.06)] backdrop-blur-md">
-              <Button variant="secondary" onClick={() => router.push("/claim/documents")}>
-                {t("back")}
-              </Button>
-              <button
-                type="button"
-                disabled={busy}
-                onClick={() => !busy && setConfirm(true)}
-                className="inline-flex flex-1 select-none items-center justify-center gap-2 rounded-xl bg-brand px-5 py-3.5 min-h-[48px] text-base font-medium text-white transition-colors hover:bg-brand-dark active:bg-brand-dark disabled:cursor-not-allowed disabled:opacity-50"
-              >
-                {busy && (
-                  <span className="h-4 w-4 animate-spin rounded-full border-2 border-current border-t-transparent" />
-                )}
-                {lang === "hi" ? "सब कुछ ठीक है, दावा सबमिट करें" : "Everything Looks Good, Submit Claim"}
-                <Send size={16} />
-              </button>
-            </div>
           </div>
 
           {/* Right sidebar — sticky so it doesn't force blank scroll space */}
@@ -354,6 +335,26 @@ export default function ReviewPage() {
         </div>
 
         <p className="text-center text-xs text-muted">{t("demoDisclaimer")}</p>
+
+        {/* Actions — -mb-12 cancels PageContainer's trailing pb-12 so this can
+            actually stick to the viewport bottom instead of detaching early. */}
+        <div className="sticky bottom-0 -mx-5 -mb-12 flex gap-3 border-t border-line bg-canvas/95 px-5 pb-5 pt-3 shadow-[0_-8px_24px_rgba(17,33,47,0.06)] backdrop-blur-md">
+          <Button variant="secondary" onClick={() => router.push("/claim/documents")}>
+            {t("back")}
+          </Button>
+          <button
+            type="button"
+            disabled={busy}
+            onClick={() => !busy && setConfirm(true)}
+            className="inline-flex flex-1 select-none items-center justify-center gap-2 rounded-xl bg-brand px-5 py-3.5 min-h-[48px] text-base font-medium text-white transition-colors hover:bg-brand-dark active:bg-brand-dark disabled:cursor-not-allowed disabled:opacity-50"
+          >
+            {busy && (
+              <span className="h-4 w-4 animate-spin rounded-full border-2 border-current border-t-transparent" />
+            )}
+            {lang === "hi" ? "सब कुछ ठीक है, दावा सबमिट करें" : "Everything Looks Good, Submit Claim"}
+            <Send size={16} />
+          </button>
+        </div>
       </PageContainer>
 
       {/* Confirm modal */}

@@ -270,35 +270,38 @@ export default function DocumentsPage() {
           </div>
         </div>
 
-        {/* Actions */}
-        <div className="sticky bottom-0 -mx-5 flex gap-3 border-t border-line bg-canvas/95 px-5 pb-5 pt-3 shadow-[0_-8px_24px_rgba(17,33,47,0.06)] backdrop-blur-md">
-          <Button variant="secondary" onClick={() => router.push("/claim/verify")}>
-            {t("back")}
-          </Button>
-          <Button
-            className="flex-1 gap-2 !bg-brand text-white hover:!bg-brand-dark active:!bg-brand-dark focus-visible:!ring-brand"
-            disabled={!allRequired}
-            onClick={() => router.push("/claim/review")}
-            aria-disabled={!allRequired}
-            title={
-              !allRequired
-                ? lang === "hi"
-                  ? "सभी आवश्यक दस्तावेज़ अपलोड करें"
-                  : "Upload all required documents to continue"
-                : undefined
-            }
-          >
-            {lang === "hi" ? "दावा समीक्षा करें" : "Review Claim"}
-            <ArrowRight size={16} />
-          </Button>
-        </div>
-        {!allRequired && (
-          <p className="text-center text-xs text-warning" role="alert">
-            {t("docsRequired")}
-          </p>
-        )}
-
         <p className="text-center text-xs text-muted">{t("demoDisclaimer")}</p>
+
+        {/* Actions — -mb-12 cancels PageContainer's trailing pb-12 so this can
+            actually stick to the viewport bottom instead of detaching early. */}
+        <div className="sticky bottom-0 -mx-5 -mb-12 flex flex-col gap-2 border-t border-line bg-canvas/95 px-5 pb-5 pt-3 shadow-[0_-8px_24px_rgba(17,33,47,0.06)] backdrop-blur-md">
+          <div className="flex gap-3">
+            <Button variant="secondary" onClick={() => router.push("/claim/verify")}>
+              {t("back")}
+            </Button>
+            <Button
+              className="flex-1 gap-2 !bg-brand text-white hover:!bg-brand-dark active:!bg-brand-dark focus-visible:!ring-brand"
+              disabled={!allRequired}
+              onClick={() => router.push("/claim/review")}
+              aria-disabled={!allRequired}
+              title={
+                !allRequired
+                  ? lang === "hi"
+                    ? "सभी आवश्यक दस्तावेज़ अपलोड करें"
+                    : "Upload all required documents to continue"
+                  : undefined
+              }
+            >
+              {lang === "hi" ? "दावा समीक्षा करें" : "Review Claim"}
+              <ArrowRight size={16} />
+            </Button>
+          </div>
+          {!allRequired && (
+            <p className="text-center text-xs text-warning" role="alert">
+              {t("docsRequired")}
+            </p>
+          )}
+        </div>
       </PageContainer>
     </AppShell>
   );

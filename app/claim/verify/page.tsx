@@ -438,39 +438,43 @@ export default function VerifyPage() {
           </div>
         </div>
 
-        {/* Bottom actions */}
-        <div className="sticky bottom-0 -mx-5 flex gap-3 border-t border-line bg-canvas/95 px-5 pb-5 pt-3 shadow-[0_-8px_24px_rgba(17,33,47,0.06)] backdrop-blur-md">
-          <Button variant="secondary" onClick={() => router.push("/claim")}>
-            {t("back")}
-          </Button>
-          {/* Native button so the brand (indigo) background applies reliably —
-              cn() uses clsx without tailwind-merge, so it can't override the
-              Button component's built-in bg-primary. */}
-          <button
-            className="inline-flex min-h-[48px] flex-1 select-none items-center justify-center gap-2 rounded-xl bg-brand px-5 py-3.5 text-base font-medium text-white transition-colors hover:bg-brand-dark active:bg-brand-dark disabled:cursor-not-allowed disabled:opacity-50"
-            disabled={hasBlockingIssue}
-            onClick={() => router.push("/claim/documents")}
-            aria-disabled={hasBlockingIssue}
-            title={hasBlockingIssue ? (lang === "hi" ? "पहले ऊपर दी गई समस्याएँ ठीक करें" : "Fix the issues above to continue") : undefined}
-          >
-            {hasBlockingIssue ? (
-              <>
-                {lang === "hi" ? "समस्याएँ ठीक करें" : "Fix Issues to Continue"}
-                <AlertTriangle size={16} />
-              </>
-            ) : (
-              <>
-                {lang === "hi" ? "दस्तावेज़ों पर जाएं" : "Continue to Documents"}
-                <ArrowRight size={16} />
-              </>
-            )}
-          </button>
+        {/* Bottom actions — -mb-12 cancels PageContainer's trailing pb-12 so this can
+            actually stick to the viewport bottom instead of detaching early. The
+            warning line lives inside this same sticky block so nothing trails after it. */}
+        <div className="sticky bottom-0 -mx-5 -mb-12 flex flex-col gap-2 border-t border-line bg-canvas/95 px-5 pb-5 pt-3 shadow-[0_-8px_24px_rgba(17,33,47,0.06)] backdrop-blur-md">
+          <div className="flex gap-3">
+            <Button variant="secondary" onClick={() => router.push("/claim")}>
+              {t("back")}
+            </Button>
+            {/* Native button so the brand (indigo) background applies reliably —
+                cn() uses clsx without tailwind-merge, so it can't override the
+                Button component's built-in bg-primary. */}
+            <button
+              className="inline-flex min-h-[48px] flex-1 select-none items-center justify-center gap-2 rounded-xl bg-brand px-5 py-3.5 text-base font-medium text-white transition-colors hover:bg-brand-dark active:bg-brand-dark disabled:cursor-not-allowed disabled:opacity-50"
+              disabled={hasBlockingIssue}
+              onClick={() => router.push("/claim/documents")}
+              aria-disabled={hasBlockingIssue}
+              title={hasBlockingIssue ? (lang === "hi" ? "पहले ऊपर दी गई समस्याएँ ठीक करें" : "Fix the issues above to continue") : undefined}
+            >
+              {hasBlockingIssue ? (
+                <>
+                  {lang === "hi" ? "समस्याएँ ठीक करें" : "Fix Issues to Continue"}
+                  <AlertTriangle size={16} />
+                </>
+              ) : (
+                <>
+                  {lang === "hi" ? "दस्तावेज़ों पर जाएं" : "Continue to Documents"}
+                  <ArrowRight size={16} />
+                </>
+              )}
+            </button>
+          </div>
+          {hasBlockingIssue && (
+            <p className="text-center text-xs text-warning" role="alert">
+              {lang === "hi" ? "कृपया ऊपर दी गई समस्याएँ पहले ठीक करें" : "Please fix the issues above before continuing"}
+            </p>
+          )}
         </div>
-        {hasBlockingIssue && (
-          <p className="text-center text-xs text-warning" role="alert">
-            {lang === "hi" ? "कृपया ऊपर दी गई समस्याएँ पहले ठीक करें" : "Please fix the issues above before continuing"}
-          </p>
-        )}
       </PageContainer>
     </AppShell>
   );
