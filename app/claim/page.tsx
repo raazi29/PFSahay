@@ -223,8 +223,10 @@ export default function ClaimAssistantPage() {
           </div>
         </div>
 
-        {/* Stepper */}
-        <div className="border-b border-line bg-surface/60 px-4 py-4 sm:px-6 lg:px-8">
+        {/* Stepper — opaque bg (not /60) since this now sits in the sticky block and
+            chat content scrolls underneath it; a translucent background let scrolled
+            messages bleed through and visually overlap the step labels. */}
+        <div className="border-b border-line bg-surface px-4 py-4 sm:px-6 lg:px-8">
           <div className="mx-auto w-full max-w-4xl">
             <Stepper steps={steps} current={activeStepKey} />
           </div>
@@ -232,7 +234,7 @@ export default function ClaimAssistantPage() {
       </div>
 
       {/* Stepper — mobile only (desktop stepper lives in the sticky block above) */}
-      <div className="border-b border-line bg-surface/60 px-4 py-4 sm:px-6 lg:hidden">
+      <div className="border-b border-line bg-surface px-4 py-4 sm:px-6 lg:hidden">
         <div className="mx-auto w-full max-w-4xl">
           <Stepper steps={steps} current={activeStepKey} />
         </div>
