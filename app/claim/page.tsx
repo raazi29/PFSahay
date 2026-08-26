@@ -79,10 +79,15 @@ export default function ClaimAssistantPage() {
     const reasonMeta = REASONS.find((r) => r.key === out.intent);
     const explanation =
       lang === "hi" && reasonMeta?.explanationHi ? reasonMeta.explanationHi : out.explanation;
+    const closing =
+      lang === "hi"
+        ? "अभी के लिए बस इतना ही चाहिए। अपने विवरण जाँचने के लिए 'जारी रखें' दबाएं।"
+        : "That's everything I need for now. Tap Continue and I'll check your details against EPFO records.";
     setMessages((m) => [
       ...m,
       { role: "assistant", text: explanation },
       { role: "assistant", text: `${path.label} — ${summary}` },
+      { role: "assistant", text: closing },
     ]);
     setPhase("done");
   }
@@ -282,8 +287,8 @@ export default function ClaimAssistantPage() {
             </div>
           </div>
 
-          {/* Right sidebar */}
-          <div className="hidden space-y-4 lg:block">
+          {/* Right sidebar — sticky so it doesn't force blank scroll space beneath a short chat transcript */}
+          <div className="hidden space-y-4 lg:sticky lg:top-40 lg:block lg:self-start">
             {/* Your Claim Path */}
             <Card>
               <div className="mb-3 flex items-center gap-2.5">

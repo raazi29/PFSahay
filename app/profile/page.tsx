@@ -186,8 +186,8 @@ export default function ProfilePage() {
             {tab === "accounts" && <LinkedAccountsCard u={u} lang={lang} />}
           </div>
 
-          {/* Right sidebar */}
-          <div className="hidden space-y-5 lg:block">
+          {/* Right sidebar — sticky so it doesn't force blank scroll space */}
+          <div className="hidden space-y-5 lg:sticky lg:top-24 lg:block lg:self-start">
             <PfSummaryCard u={u} lang={lang} router={router} />
             <KycHealthCard lang={lang} />
             <UpdateKycCard lang={lang} onUpdate={notEditable} />

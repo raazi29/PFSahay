@@ -167,8 +167,8 @@ export default function LoginPage() {
             </div>
           </div>
 
-          {/* ---------- Right sidebar ---------- */}
-          <aside className="hidden space-y-4 lg:block">
+          {/* ---------- Right sidebar — sticky so it doesn't force blank scroll space ---------- */}
+          <aside className="hidden space-y-4 lg:sticky lg:top-6 lg:block lg:self-start">
             {/* Common issues I prevent */}
             <Card>
               <h3 className="mb-3 text-sm font-bold uppercase tracking-wide text-ink">

@@ -271,8 +271,8 @@ export default function SubmittedPage() {
             </div>
           </div>
 
-          {/* Right sidebar */}
-          <div className="space-y-4 hidden lg:block">
+          {/* Right sidebar — sticky so it doesn't force blank scroll space */}
+          <div className="space-y-4 hidden lg:sticky lg:top-16 lg:block lg:self-start">
             {/* What happens next */}
             <Card>
               <h3 className="text-sm font-bold text-ink uppercase tracking-wide mb-4">

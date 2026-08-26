@@ -288,8 +288,8 @@ export default function ReviewPage() {
             </div>
           </div>
 
-          {/* Right sidebar */}
-          <div className="space-y-4 hidden lg:block">
+          {/* Right sidebar — sticky so it doesn't force blank scroll space */}
+          <div className="space-y-4 hidden lg:sticky lg:top-24 lg:block lg:self-start">
             {/* Claim Summary */}
             <Card>
               <h3 className="text-sm font-bold text-ink uppercase tracking-wide mb-3">

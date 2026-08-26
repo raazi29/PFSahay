@@ -338,8 +338,8 @@ export default function ClaimsPage() {
             </p>
           </div>
 
-          {/* Right sidebar */}
-          <div className="hidden space-y-5 lg:block">
+          {/* Right sidebar — sticky so it doesn't force blank scroll space */}
+          <div className="hidden space-y-5 lg:sticky lg:top-24 lg:block lg:self-start">
             {/* Know your claim */}
             <Card>
               <h3 className="mb-3 text-sm font-bold uppercase tracking-wide text-ink">
